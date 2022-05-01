@@ -1,0 +1,8 @@
+.DS_Store
+._*
+desktop.ini
+thumbs.db
+/_homework*/
+/_tmp/
+node_modules/
+.env

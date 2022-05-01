@@ -1,0 +1,28 @@
+{
+  "name": "nu-u12h-employee-tracker",
+  "version": "2022.5.2",
+  "description": "an employee cms",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nearcatch/nu-u12h-employee-tracker.git"
+  },
+  "keywords": [
+    "node",
+    "inquirer",
+    "mysql"
+  ],
+  "author": "nearcatch",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nearcatch/nu-u12h-employee-tracker/issues"
+  },
+  "homepage": "https://github.com/nearcatch/nu-u12h-employee-tracker#readme",
+  "dependencies": {
+    "inquirer": "^8.2.4",
+    "mysql2": "^2.3.3"
+  }
+}
