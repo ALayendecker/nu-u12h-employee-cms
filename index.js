@@ -18,7 +18,19 @@ async function connect() {
 }
 async function init() {
   await connect();
-
-  const [company] = await db.execute("SELECT employees.id, employees.first_name, employees.last_name, roles.title, departments.name AS department, roles.salary, CONCAT_WS(' ', managers.first_name, managers.last_name) AS manager FROM ( employees LEFT JOIN roles ON role_id = roles.id LEFT JOIN ( SELECT * FROM employees ) AS managers ON employees.manager_id = managers.id LEFT JOIN departments ON department_id = departments.id )");
-  console.table(company);
+  // show employees with ids, first names, last names, job titles, departments, salaries, and managers
+  const [employees] = await db.execute(
+    "SELECT employees.id, employees.first_name, employees.last_name, roles.title, departments.name AS department, roles.salary, CONCAT(managers.first_name, ' ', managers.last_name) AS manager FROM ( employees LEFT JOIN roles ON role_id = roles.id LEFT JOIN ( SELECT * FROM employees ) AS managers ON employees.manager_id = managers.id LEFT JOIN departments ON department_id = departments.id )"
+  );
+  // show departments with ids and names
+  const [departments] = await db.execute(
+    "SELECT departments.id, departments.name FROM departments"
+  );
+  // show roles with ids, titles, department, and salary
+  const [roles] = await db.execute(
+    "SELECT roles.id, roles.title, departments.name AS department, roles.salary FROM roles LEFT JOIN departments ON roles.department_id = departments.id"
+  );
+  console.table(employees);
+  console.table(departments);
+  console.table(roles);
 }
