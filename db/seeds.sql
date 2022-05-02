@@ -26,4 +26,4 @@ VALUES ("Will", "Taylor", 5, NULL),
 -- insert managers above and then basic employees below to prevent constraint errors
 INSERT INTO employees (first_name, last_name, role_id, manager_id)
 VALUES ("William", "Hoffman", 6, 1),
-  ("Eric", "Barr", 6, 2);
+  ("Eric", "Barr", 8, 2);
