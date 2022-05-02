@@ -63,6 +63,7 @@ async function cms() {
     await addEmployee();
     cms();
   } else if (choice === "Update employee role") {
+    await updateEmployeeRole();
     cms();
   } else if (choice === "View all roles") {
     console.table(await getRoles());
@@ -83,55 +84,6 @@ async function cms() {
     console.error(`error: ${choice}`);
     process.exit();
   }
-}
-
-async function addDepartment() {
-  const { departmentName } = await prompt([
-    {
-      type: "input",
-      name: "departmentName",
-      message: "What is the name of the department?",
-    },
-  ]);
-  // set query and args and then insert into database
-  let query = "INSERT INTO departments (name) VALUES (?)";
-  let args = [departmentName];
-  await db.query(query, args);
-  console.log(`Added ${departmentName} to the departments.`);
-}
-
-async function addRole() {
-  const newRole = await prompt([
-    {
-      type: "input",
-      name: "title",
-      message: "What is the name of the role?",
-    },
-    {
-      type: "input",
-      name: "salary",
-      message: "What is the salary of the role?",
-    },
-    {
-      type: "list",
-      name: "departmentId",
-      message: "Which department does the role belong to?",
-  // load departments dynamically and list, storing department.id as the chosen value
-  choices: (
-        await getDepartments()
-      ).map((department) => ({
-        name: department.name,
-        value: department.id,
-      })),
-    },
-  ]);
-  // set query and args and then insert into database
-  const { title, salary, departmentId } = newRole;
-  let query =
-    "INSERT INTO roles (title, salary, department_id) VALUES (?, ?, ?)";
-  let args = [title, salary, departmentId];
-  await db.query(query, args);
-  console.log(`Added ${title} to the roles.`);
 }
 
 async function addEmployee() {
@@ -157,8 +109,8 @@ async function addEmployee() {
       type: "list",
       name: "roleId",
       message: "What is the employee's role?",
-  // load roles dynamically and list, storing role.id as the chosen value
-  choices: (
+      // load roles dynamically and list, storing role.id as the chosen value
+      choices: (
         await getRoles()
       ).map((role) => ({
         name: role.title,
@@ -180,4 +132,98 @@ async function addEmployee() {
   await db.query(query, args);
   console.log(`Added ${firstName} ${lastName} to the employees.`);
 }
+
+async function updateEmployeeRole() {
+  const employeeUpdate = await prompt([
+    {
+      type: "list",
+      name: "employee",
+      message: "Which employee's role do you want to update?",
+      // load employees dynamically and list, storing employee as the chosen value
+      choices: (
+        await getEmployees()
+      ).map((employee) => ({
+        name: employee.first_name + " " + employee.last_name,
+        value: employee,
+      })),
+    },
+    {
+      type: "list",
+      name: "role",
+      message: "Which role do you want to assign the selected employee?",
+      // load roles dynamically and list, storing role as the chosen value
+      choices: (
+        await getRoles()
+      ).map((role) => ({
+        name: role.title,
+        value: role,
+      })),
+    },
+  ]);
+  // destructure employeeUpdate
+  const { employee, role } = employeeUpdate;
+  const {
+    first_name: firstName,
+    last_name: lastName,
+    id: employeeId,
+  } = employee;
+  const { title: roleTitle, id: roleId } = role;
+  // set query and args and then insert into database
+  let query = "UPDATE employees SET role_id=? WHERE id=?";
+  let args = [roleId, employeeId];
+  await db.query(query, args);
+  console.log(
+    `Updated ${firstName} ${lastName} to have the ${roleTitle} role.`
+  );
+}
+
+async function addRole() {
+  const newRole = await prompt([
+    {
+      type: "input",
+      name: "title",
+      message: "What is the name of the role?",
+    },
+    {
+      type: "input",
+      name: "salary",
+      message: "What is the salary of the role?",
+    },
+    {
+      type: "list",
+      name: "departmentId",
+      message: "Which department does the role belong to?",
+      // load departments dynamically and list, storing department.id as the chosen value
+      choices: (
+        await getDepartments()
+      ).map((department) => ({
+        name: department.name,
+        value: department.id,
+      })),
+    },
+  ]);
+  // set query and args and then insert into database
+  const { title, salary, departmentId } = newRole;
+  let query =
+    "INSERT INTO roles (title, salary, department_id) VALUES (?, ?, ?)";
+  let args = [title, salary, departmentId];
+  await db.query(query, args);
+  console.log(`Added ${title} to the roles.`);
+}
+
+async function addDepartment() {
+  const { departmentName } = await prompt([
+    {
+      type: "input",
+      name: "departmentName",
+      message: "What is the name of the department?",
+    },
+  ]);
+  // set query and args and then insert into database
+  let query = "INSERT INTO departments (name) VALUES (?)";
+  let args = [departmentName];
+  await db.query(query, args);
+  console.log(`Added ${departmentName} to the departments.`);
+}
+
 cms();
