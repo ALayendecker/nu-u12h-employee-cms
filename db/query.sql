@@ -7,13 +7,13 @@ SELECT employees.id,
   roles.title,
   departments.name AS department,
   roles.salary,
-  CONCAT_WS(' ', manager.first_name, manager.last_name) AS manager
+  CONCAT_WS(' ', managers.first_name, managers.last_name) AS manager
 FROM (
     employees
     LEFT JOIN roles ON role_id = roles.id
     LEFT JOIN (
       SELECT *
       FROM employees
-    ) AS manager ON manager.id = employees.manager_id
+    ) AS managers ON employees.manager_id = managers.id
     LEFT JOIN departments ON department_id = departments.id
   );
