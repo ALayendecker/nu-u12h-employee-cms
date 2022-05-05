@@ -79,10 +79,10 @@ async function cms() {
     cms();
   } else if (choice === "Quit") {
     console.log("Goodbye!");
-    process.exit();
+    process.exit(0);
   } else {
     console.error(`error: ${choice}`);
-    process.exit();
+    process.exit(1);
   }
 }
 
